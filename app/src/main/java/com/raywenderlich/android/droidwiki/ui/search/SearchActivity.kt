@@ -39,17 +39,21 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.SearchView
 import com.raywenderlich.android.droidwiki.R
+import com.raywenderlich.android.droidwiki.application.WikiApplication
 import com.raywenderlich.android.droidwiki.model.Entry
 import com.raywenderlich.android.droidwiki.utils.errorDialog
 import kotlinx.android.synthetic.main.activity_search.*
+import javax.inject.Inject
 
 class SearchActivity : Activity(), EntryView {
 
-    private val presenter: EntryPresenter = EntryPresenterImpl()
+    @Inject lateinit var presenter: EntryPresenter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
+
+        (application as WikiApplication).wikiComponent.inject(this)
 
         actionBar?.setHomeAsUpIndicator(R.drawable.ic_home)
         actionBar?.setDisplayHomeAsUpEnabled(true)
@@ -84,6 +88,7 @@ class SearchActivity : Activity(), EntryView {
                         return true
                     }
                 })
+
                 queryHint = getString(R.string.search_hint)
             }
 
@@ -94,7 +99,6 @@ class SearchActivity : Activity(), EntryView {
     }
 
     // Implementation of EntryView
-
     override fun displayLoading() {
         wait_progress_bar.post {
             wait_progress_bar.visibility = View.VISIBLE
@@ -120,3 +124,4 @@ class SearchActivity : Activity(), EntryView {
         R.string.error.errorDialog(this)
     }
 }
+
